@@ -24,3 +24,21 @@ macro_rules! failure_boilerplate {
         }
     };
 }
+
+#[macro_export]
+macro_rules! impl_serialize_for_error {
+    ($error:ident) => {
+        impl ::serde::Serialize for $error {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where S: ::serde::Serializer
+            {
+                use ::serde::ser::SerializeMap;
+                let mut map = serializer.serialize_map(Some(3))?;
+                map.serialize_entry("code", &self.kind())?;
+                map.serialize_entry("msg", &format!("{}", self))?;
+                map.serialize_entry("causes", &::failure::Fail::iter_causes(self).map(|e| format!("{}", e)).collect::<Vec<_>>())?;
+                map.end()
+            }
+        }
+    }
+}
