@@ -10,8 +10,8 @@ macro_rules! failure_boilerplate {
             fn cause(&self) -> Option<&::failure::Fail> { self.inner.cause() }
             fn backtrace(&self) -> Option<&::failure::Backtrace> { self.inner.backtrace() }
         }
-        impl fmt::Display for $error {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> fmt::Result { ::std::fmt::Display::fmt(&self.inner, f) }
+        impl ::std::fmt::Display for $error {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result { ::std::fmt::Display::fmt(&self.inner, f) }
         }
         impl $error {
             pub fn kind(&self) -> $error_kind { *self.inner.get_context() }
